@@ -1,4 +1,4 @@
-# .github/workflows/main.yml
+
 
 name: Sync Crate Source via Node.js script
 
@@ -38,4 +38,5 @@ jobs:
           # 你的仓库名 (自动获取)
           REPO_NAME: novel-cli-backup
           # 从 Secrets 中读取 PAT
+
           GH_PAT: ${{ secrets.GH_PAT }}
