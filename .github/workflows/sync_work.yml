@@ -1,5 +1,3 @@
-
-
 name: Sync Crate Source via Node.js script
 
 on:
@@ -10,33 +8,37 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # 必须赋予写权限，以便提交保活 commit
     
     steps:
-      # 1. 检出包含 sync.js 和 package.json 的仓库
       - name: Checkout self
         uses: actions/checkout@v3
 
-      # 2. 设置 Node.js 环境
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22' # 或者 20
+          node-version: '22'
           cache: 'npm'
 
-      # 3. 安装依赖
       - name: Install dependencies
         run: npm install
 
-      # 4. 运行同步脚本
       - name: Run sync script
         run: node sync.js
         env:
-          # 要同步的 crate
           CRATE_NAME: novel-cli
-          # 你的 GitHub 用户名或组织名
-          GH_USER: ${{ github.repository_owner }} 
-          # 你的仓库名 (自动获取)
+          GH_USER: ${{ github.repository_owner }}
           REPO_NAME: novel-cli-backup
-          # 从 Secrets 中读取 PAT
-
           GH_PAT: ${{ secrets.GH_PAT }}
+
+      # --- 新增：保活步骤 (Keepalive) ---
+      # 每次运行成功后，修改 keepalive 文件并提交到当前 Action 仓库
+      - name: Keepalive Workflow
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          date > keepalive.log
+          git add keepalive.log
+          git commit -m "Automated keepalive: $(date)" || exit 0
+          git push
