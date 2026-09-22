@@ -4,6 +4,7 @@ const { execa } = require('execa');
 const fs = require('fs-extra');
 const path = require('path');
 
+axios.defaults.headers.common['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36';
 // --- 配置区 ---
 const CRATE_NAME = process.env.CRATE_NAME || 'novel-cli';
 const GH_USER = process.env.GH_USER;
